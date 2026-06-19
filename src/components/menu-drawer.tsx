@@ -18,6 +18,15 @@ import {
   Trash2,
 } from "lucide-react";
 import { THEMES, type ThemeId, applyTheme, loadTheme } from "@/lib/themes";
+import {
+  type BgState,
+  loadBg,
+  saveBg,
+  applyBg,
+  resetBg,
+  fileToDataUrl,
+  DEFAULT_BG,
+} from "@/lib/background";
 import { loadHistory, clearHistory, type HistoryEntry } from "@/lib/history";
 
 type Props = {
@@ -31,11 +40,13 @@ export function MenuDrawer({ onAskText, onReplay }: Props) {
     "root",
   );
   const [theme, setTheme] = useState<ThemeId>("oraculo");
+  const [bg, setBg] = useState<BgState>(DEFAULT_BG);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [textQ, setTextQ] = useState("");
 
   useEffect(() => {
     setTheme(loadTheme());
+    setBg(loadBg());
   }, []);
   useEffect(() => {
     if (open) setHistory(loadHistory());
@@ -49,6 +60,12 @@ export function MenuDrawer({ onAskText, onReplay }: Props) {
     { id: "settings", label: "Configurações", icon: Settings },
     { id: "legal", label: "Informações Legais", icon: ScrollText },
   ] as const;
+
+  const updateBg = (next: BgState) => {
+    setBg(next);
+    applyBg(next);
+    saveBg(next);
+  };
 
   return (
     <Sheet open={open} onOpenChange={(v) => { setOpen(v); if (!v) setView("root"); }}>
