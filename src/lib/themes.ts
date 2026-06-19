@@ -1,11 +1,9 @@
-export type ThemeId = "oraculo" | "dourado" | "violeta" | "matrix" | "branco";
+export type ThemeId = "oraculo" | "ciano-branco" | "ciano-preto";
 
 export const THEMES: { id: ThemeId; name: string; desc: string; swatch: string[] }[] = [
   { id: "oraculo", name: "Oráculo", desc: "Preto + Ciano Neon", swatch: ["#000000", "#00FFFF"] },
-  { id: "dourado", name: "Dourado Imperial", desc: "Preto + Dourado", swatch: ["#000000", "#D4AF37"] },
-  { id: "violeta", name: "Violeta Místico", desc: "Preto + Roxo", swatch: ["#0a0014", "#A855F7"] },
-  { id: "matrix", name: "Verde Matrix", desc: "Preto + Verde Neon", swatch: ["#000000", "#00FF41"] },
-  { id: "branco", name: "Branco Elegante", desc: "Branco + Azul Escuro", swatch: ["#ffffff", "#1E3A8A"] },
+  { id: "ciano-branco", name: "Ciano Luminoso", desc: "Ciano Neon + Branco", swatch: ["#FFFFFF", "#00FFFF"] },
+  { id: "ciano-preto", name: "Ciano Profundo", desc: "Ciano Neon + Preto", swatch: ["#00FFFF", "#000000"] },
 ];
 
 export const THEME_KEY = "vv.theme";
