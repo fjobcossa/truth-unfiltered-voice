@@ -6,6 +6,7 @@ import { Mic, MicOff, Video, Square, Volume2 } from "lucide-react";
 import { askMachine } from "@/lib/api/ask.functions";
 import { startListening, speak, stopSpeaking } from "@/lib/voice";
 import { applyTheme, loadTheme } from "@/lib/themes";
+import { applyBg, loadBg } from "@/lib/background";
 import { saveEntry, type HistoryEntry } from "@/lib/history";
 import { MenuDrawer } from "@/components/menu-drawer";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ function Index() {
 
   useEffect(() => {
     applyTheme(loadTheme());
+    applyBg(loadBg());
     // Auto-detect language from browser
     const nav = navigator.language || "pt-PT";
     const lower = nav.toLowerCase();
@@ -115,7 +117,7 @@ function Index() {
   }[status];
 
   return (
-    <div className="starfield relative flex min-h-screen flex-col overflow-hidden">
+    <div className="relative flex min-h-screen flex-col overflow-hidden">
       {/* Top bar */}
       <header className="relative z-20 flex items-center justify-between px-5 pt-5 sm:px-8">
         <div className="h-10 w-10" aria-hidden />
@@ -187,14 +189,14 @@ function Index() {
         </p>
 
         {transcript && (
-          <div className="mt-6 max-w-xl rounded-xl border border-primary/20 bg-card/40 p-4 text-center text-sm text-foreground/90 backdrop-blur-sm">
+          <div className="mt-6 max-w-xl rounded-xl border border-primary/30 p-4 text-center text-sm text-foreground/95">
             <p className="text-[10px] uppercase tracking-widest text-primary/70">A tua pergunta</p>
             <p className="mt-1 italic">"{transcript}"</p>
           </div>
         )}
 
         {answer && (
-          <div className="mt-4 max-h-64 max-w-xl overflow-y-auto rounded-xl border border-primary/30 bg-card/60 p-5 text-left text-sm leading-relaxed text-foreground/95 shadow-[0_0_40px_-15px] shadow-primary/40 backdrop-blur-sm">
+          <div className="mt-4 max-h-64 max-w-xl overflow-y-auto rounded-xl border border-primary/40 p-5 text-left text-sm leading-relaxed text-foreground shadow-[0_0_40px_-15px] shadow-primary/50">
             <p className="text-[10px] uppercase tracking-widest text-primary">A Máquina responde</p>
             <p className="mt-2 whitespace-pre-wrap">{answer}</p>
           </div>
@@ -217,10 +219,10 @@ function Index() {
       </main>
 
       {/* Fixed bottom: video CTA */}
-      <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-primary/20 bg-background/85 px-5 py-4 backdrop-blur-lg sm:px-8">
+      <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-primary/25 px-5 py-4 backdrop-blur-md sm:px-8">
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-primary">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/40 text-primary">
               <Video className="h-5 w-5" />
             </span>
             <div>

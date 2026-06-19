@@ -18,6 +18,15 @@ import {
   Trash2,
 } from "lucide-react";
 import { THEMES, type ThemeId, applyTheme, loadTheme } from "@/lib/themes";
+import {
+  type BgState,
+  loadBg,
+  saveBg,
+  applyBg,
+  resetBg,
+  fileToDataUrl,
+  DEFAULT_BG,
+} from "@/lib/background";
 import { loadHistory, clearHistory, type HistoryEntry } from "@/lib/history";
 
 type Props = {
@@ -31,11 +40,13 @@ export function MenuDrawer({ onAskText, onReplay }: Props) {
     "root",
   );
   const [theme, setTheme] = useState<ThemeId>("oraculo");
+  const [bg, setBg] = useState<BgState>(DEFAULT_BG);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [textQ, setTextQ] = useState("");
 
   useEffect(() => {
     setTheme(loadTheme());
+    setBg(loadBg());
   }, []);
   useEffect(() => {
     if (open) setHistory(loadHistory());
@@ -49,6 +60,12 @@ export function MenuDrawer({ onAskText, onReplay }: Props) {
     { id: "settings", label: "Configurações", icon: Settings },
     { id: "legal", label: "Informações Legais", icon: ScrollText },
   ] as const;
+
+  const updateBg = (next: BgState) => {
+    setBg(next);
+    applyBg(next);
+    saveBg(next);
+  };
 
   return (
     <Sheet open={open} onOpenChange={(v) => { setOpen(v); if (!v) setView("root"); }}>
@@ -158,8 +175,13 @@ export function MenuDrawer({ onAskText, onReplay }: Props) {
           )}
 
           {view === "themes" && (
-            <div className="grid grid-cols-1 gap-2">
-              {THEMES.map((t) => (
+            <div className="space-y-5">
+              <div>
+                <p className="mb-2 text-[11px] uppercase tracking-widest text-primary/70">
+                  Tema base
+                </p>
+                <div className="grid grid-cols-1 gap-2">
+                  {THEMES.map((t) => (
                 <button
                   key={t.id}
                   onClick={() => {
@@ -186,7 +208,100 @@ export function MenuDrawer({ onAskText, onReplay }: Props) {
                     <p className="text-xs text-muted-foreground">{t.desc}</p>
                   </div>
                 </button>
-              ))}
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-2 text-[11px] uppercase tracking-widest text-primary/70">
+                  Fundo personalizado
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {(["theme", "color", "image"] as const).map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => updateBg({ ...bg, mode: m })}
+                      className={`rounded-lg border p-2 text-xs transition ${
+                        bg.mode === m
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-primary/15 text-muted-foreground hover:border-primary/40"
+                      }`}
+                    >
+                      {m === "theme" ? "Padrão" : m === "color" ? "Cor" : "Foto"}
+                    </button>
+                  ))}
+                </div>
+
+                {bg.mode === "color" && (
+                  <div className="mt-3 flex items-center gap-3 rounded-lg border border-primary/15 p-3">
+                    <input
+                      type="color"
+                      value={bg.color}
+                      onChange={(e) => updateBg({ ...bg, color: e.target.value })}
+                      className="h-10 w-14 cursor-pointer rounded border border-primary/30 bg-transparent"
+                      aria-label="Cor de fundo"
+                    />
+                    <div className="text-xs">
+                      <p className="font-medium text-foreground">{bg.color.toUpperCase()}</p>
+                      <p className="text-muted-foreground">Aplicada a toda a app</p>
+                    </div>
+                  </div>
+                )}
+
+                {bg.mode === "image" && (
+                  <div className="mt-3 space-y-3">
+                    <label className="flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-primary/40 p-4 text-center text-xs text-primary hover:bg-primary/5">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const f = e.target.files?.[0];
+                          if (!f) return;
+                          const url = await fileToDataUrl(f);
+                          updateBg({ ...bg, image: url });
+                        }}
+                      />
+                      {bg.image ? "Trocar fotografia" : "Carregar da galeria"}
+                    </label>
+                    {bg.image && (
+                      <div className="relative h-28 overflow-hidden rounded-lg border border-primary/30">
+                        <img
+                          src={bg.image}
+                          alt="Pré-visualização do fundo"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <div className="mb-1 flex justify-between text-[10px] uppercase tracking-widest text-muted-foreground">
+                        <span>Opacidade</span>
+                        <span>{Math.round(bg.opacity * 100)}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.05}
+                        value={bg.opacity}
+                        onChange={(e) =>
+                          updateBg({ ...bg, opacity: Number(e.target.value) })
+                        }
+                        className="w-full accent-[var(--primary)]"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setBg(resetBg())}
+                  className="mt-3 w-full text-muted-foreground hover:text-foreground"
+                >
+                  Repor fundo padrão
+                </Button>
+              </div>
             </div>
           )}
 
