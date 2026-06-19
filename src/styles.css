@@ -226,17 +226,54 @@
     color: var(--color-foreground);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
-    background-image:
-      radial-gradient(ellipse at top, color-mix(in oklab, var(--primary) 10%, transparent), transparent 60%),
-      radial-gradient(ellipse at bottom, color-mix(in oklab, var(--primary) 6%, transparent), transparent 70%);
-    background-attachment: fixed;
     min-height: 100vh;
+    position: relative;
   }
 
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
     letter-spacing: 0.04em;
   }
+}
+
+/* === Single app background layer === */
+/* Default ambient glow (themed) — replaced when user picks custom bg. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-color: var(--color-background);
+  background-image:
+    radial-gradient(ellipse at top, color-mix(in oklab, var(--primary) 10%, transparent), transparent 60%),
+    radial-gradient(ellipse at bottom, color-mix(in oklab, var(--primary) 6%, transparent), transparent 70%);
+}
+
+/* User-chosen solid color */
+:root[data-bg-mode="color"] body::before {
+  background-image: none;
+  background-color: var(--custom-bg-color, var(--color-background));
+}
+
+/* User-chosen image (data URL or remote). Opacity layer sits between. */
+:root[data-bg-mode="image"] body::before {
+  background-image: var(--custom-bg-image, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #000;
+}
+/* Tint overlay tied to opacity slider (0 = bg fully visible, 1 = fully dark) */
+:root[data-bg-mode="image"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: color-mix(in oklab, var(--color-background) 100%, transparent);
+  opacity: calc(1 - var(--custom-bg-opacity, 0.5));
 }
 
 /* === Mic orb: animated pulsing rings === */
