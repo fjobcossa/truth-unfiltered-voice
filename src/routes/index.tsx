@@ -6,6 +6,7 @@ import { Mic, MicOff, Video, Square, Volume2 } from "lucide-react";
 import { askMachine } from "@/lib/api/ask.functions";
 import { startListening, speak, stopSpeaking } from "@/lib/voice";
 import { applyTheme, loadTheme } from "@/lib/themes";
+import { applyBg, loadBg } from "@/lib/background";
 import { saveEntry, type HistoryEntry } from "@/lib/history";
 import { MenuDrawer } from "@/components/menu-drawer";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ function Index() {
 
   useEffect(() => {
     applyTheme(loadTheme());
+    applyBg(loadBg());
     // Auto-detect language from browser
     const nav = navigator.language || "pt-PT";
     const lower = nav.toLowerCase();
