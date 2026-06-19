@@ -6,11 +6,10 @@
 
 /*
  * A VOZ E A VERDADE — Design System
- * Cyberpunk oracular aesthetic. Deep black, neon accents, mystical glow.
- * Themes are switched via [data-theme="..."] on <html>.
+ * Cyberpunk oracular aesthetic. Fundo único, neon accents, mystical glow.
+ * Themes: [data-theme="..."]. Custom bg: [data-bg-mode="color"|"image"] +
+ * --custom-bg-color / --custom-bg-image / --custom-bg-opacity on :root.
  */
-
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Space+Grotesk:wght@300;400;500;700&display=swap');
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
